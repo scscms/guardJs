@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js挟持</title>
+</head>
+<body>
+<div>
+    情况：直接插入图片，或者图片连接广告。
+    对策：插入a,img可以，但不能带非法的src\href链接，判断到非法src禁止appendChild。而后期修改非法src时会自动阻止修改。
+</div>
+<script type="text/javascript" src="../dist/guardJs.js"></script>
+<script type="text/javascript" src="../js/appendChild.js"></script>
+</body>
+</html>

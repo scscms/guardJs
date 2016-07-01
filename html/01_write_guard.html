@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>guardJs防支持-document.write注入</title>
+</head>
+<body>
+<div>
+    情况：js被挟持后，可使用document.write或document.writeln插入第三方js，从而注入广告内容。
+    对策：重写document.write,writeln方法，并解救被挟持的js。支持所有浏览器。
+    缺点：如果字符串分散写入会全部被忽略掉。
+</div>
+<script type="text/javascript" src="../dist/guardJs.js"></script>
+<script type="text/javascript" src="../js/write.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>guardJs防支持-HTMLElement.innerHTML注入</title>
+</head>
+<body>
+<div>
+    情况：插入div后，使用innerHTML注入广告。
+    对策：过滤innerHTML注入标签不能是框架和script。
+</div>
+<div id="id"></div>
+<script type="text/javascript" src="../dist/guardJs.js"></script>
+<script type="text/javascript" src="../js/innerHTML.js"></script>
+</body>
+</html>

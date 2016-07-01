@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>guardJs防支持-修改src或href劫持现有标签</title>
+</head>
+<body>
+<div>
+    情况：修改现有iframe或img或a的href达到劫持目的。
+    对策：标签src属性存在set和get方法，我们改写它的set方法，加入合法地址检查。
+</div>
+<iframe src="about:blank" frameborder="1" width="300" height="200"></iframe>
+<a href="http://www.baidu.com"><img
+        src="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo_top_ca79a146.png" alt="百度"/></a>
+
+<script type="text/javascript" src="../dist/guardJs.js"></script>
+<script type="text/javascript" src="../js/modifySrc.js"></script>
+</body>
+</html>

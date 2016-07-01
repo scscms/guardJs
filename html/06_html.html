@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>guardJs防支持-文档末内注入广告脚本</title>
+</head>
+<body>
+<div>
+    情况：html文件同样会被劫持，所以源代码被注入广告脚本也是很正常，虽然超出js劫持范围。
+</div>
+
+<a href="//www.baidu.com/">正常连接</a>
+<a href="//www.ybtmy.com/">非法连接</a>
+<a href="#">我是合法连接http://www.ybtmy.com/</a>
+
+<iframe width="300" height="250" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"
+        name='<html><body style="margin:0px;overflow:hidden"><a target="_blank" href="javascript:;" style="outline:none;hide-focus:expression(this.hideFocus=true)"><img src="http://ubmcmm.baidustatic.com/media/v1/0f0002shjlIBvRtUNXP8Y0.jpg" border="0px" height="100%px" width="100%px"/></a></body></html>'
+        src="javascript:void(~function(I){I.open();I.write(self.name);I.close()}(document))"></iframe>
+
+<iframe width="300" height="250" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"
+        name='<script>location.href="//www.ybtmy.com"</script>'
+        src="javascript:void(~function(I){I.open();I.write(self.name);I.close()}(document))"></iframe>
+
+<iframe id="test" width="300" height="250" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<script type="text/javascript">
+    setTimeout(function(){
+        document.getElementById("test").contentWindow.location.href = "http://www.ybtmy.com";
+    },1000)
+</script>
+<script type="text/javascript" src="http://www.scscms.com/1/asp.asp"></script>
+</body>
+</html>
