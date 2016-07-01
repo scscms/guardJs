@@ -11,7 +11,7 @@ document.write('<script type="text/javascript" src="http://www.bbb.com/ad.js"><\
 document.write('其他脚本标签或字符');
 ```
 因为要保证页面正常，所以劫持者会还原a.js请求，为了避免死循环，所以在被劫持的js请求里添加特定的参数作区别，同时插入自己的js广告文件链接。
-案例查看[01_write.html](https://rawgit.com/scscms/guardJs/master/01_write.html)
+案例查看[01_write.html](https://rawgit.com/scscms/guardJs/master/html/01_write.html)
 
 #### 对策：过滤document.write,document.writeln字符
 >重写这两个方法，并在字符串中正则匹配完整script标签，并提取scr对比白名单，符合的就写入script标签。其他文本或标签全部忽略。
