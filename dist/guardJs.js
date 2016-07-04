@@ -10,14 +10,14 @@
         wo = w.open,//备用方法
         h = w.HTMLElement,
         MutationObserver = w.MutationObserver || w.WebKitMutationObserver || w.MozMutationObserver,//变动观察器,监视DOM变动的接口
-        reg = /(https?:)?\/\/([\w-]+\.)+[\w-]+/ig;//正则提取链接地址
+        reg = /(https?:)?\/\/([\w-]+\.)+[\w-]+/ig;//正则提取英文域名地址
     //判断是否合法链接
     function checkUrl(e) {
         for (var s; s = e.shift();) {
             s = s.toLowerCase();//data:image无法检测
             if(/^(http|\/\/)/.test(s)){
                 s = s.split("/").slice(0, 3).join("/");//截取链接前半部分
-                for (var i = r.length; i-- && -1 == r.indexOf(s[i]);) {}
+                for (var i = r.length; i-- && -1 == s.indexOf(r[i]);) {}
                 if (-1 == i) return false;//循环全部都匹配不到
             }
         }
@@ -46,7 +46,8 @@
             _rc = h.prototype.replaceChild,_ac = h.prototype.appendChild, _ib = h.prototype.insertBefore;//备用方法
         Object.defineProperty(Element.prototype, "innerHTML", {
             set: function (str) {
-                str = str.replace(/<(i?frame|script).+?<\/\1>/gi, function () {return""});
+                //因使用innerHTML添加的script是不会执行的，所以可不用理会。
+                str = str.replace(/<(i?frame).+?<\/\1>/gi, function () {return""});
                 var _a = str.match(reg);//如果没有非法链接或者是合法链接就正常赋值innerHTML
                 (!_a || checkUrl(_a)) && ih.set.call(this, str);
             }
@@ -76,28 +77,20 @@
     if (MutationObserver) {
         var observer = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
-                var type = mutation.type,tag = mutation.addedNodes,_t,_tn,_s;
+                var type = mutation.type,tag = mutation.addedNodes,_t,_s;
                 if ("childList" == type && tag) {
                     for (var i = tag.length; i--;) {
                         _t = tag[i];//过滤文本节点不处理
-                        if(1 == _t.nodeType){
-                            _tn = _t.tagName.toLowerCase();
-                            if ("script" == _tn||"img" == _tn||"a" == _tn) {
-                                _s = "a" == _tn ? _t.href:_t.src;
-                                console.log(_s);
-                                !checkUrl([_s]) && _t.parentNode && _t.parentNode.removeChild(_t);//含有非法链接直接移除
-                            }else{
-                                _s = _t.outerHTML.replace(_t.innerHTML,"").match(reg);//其他节点查属性是否有非法链接
-                                _s && !checkUrl(_s) && _t.parentNode && _t.parentNode.removeChild(_t);//含有非法链接直接移除
-                            }
+                        if(1 == _t.nodeType && _t.outerHTML){
+                            _s = _t.outerHTML.replace(_t.innerHTML,"").match(reg);//其他节点查属性是否有非法链接
+                            _s && !checkUrl(_s) && _t.parentNode && _t.parentNode.removeChild(_t);//含有非法链接直接移除
                         }
                     }
                 }else if("attributes" == type){
-                    console.log(type);
-                    _t = mutation.target;_tn = _t.getAttribute(mutation.attributeName);//获取被修改的属性
+                    _t = mutation.target;tag = _t.getAttribute(mutation.attributeName);//获取被修改的属性
                     //只对新添加或修改的属性判断，删除的属性不判断！
-                    if (_tn) {
-                        _s = _tn.match(reg);//匹配被修改的属性中是否含有非法链接
+                    if (tag) {
+                        _s = tag.match(reg);//匹配被修改的属性中是否含有非法链接
                         _s && !checkUrl(_s) && _t.setAttribute(mutation.attributeName, mutation.oldValue);
                     }
                 }

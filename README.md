@@ -11,7 +11,7 @@ document.write('<script type="text/javascript" src="http://www.bbb.com/ad.js"><\
 document.write('其他脚本标签或字符');
 ```
 因为要保证页面正常，所以劫持者会还原a.js请求，为了避免死循环，所以在被劫持的js请求里添加特定的参数作区别，同时插入自己的js广告文件链接。
-案例查看[01_write.html](https://rawgit.com/scscms/guardJs/master/01_write.html)
+案例查看[01_write.html](https://rawgit.com/scscms/guardJs/master/html/01_write.html)
 
 #### 对策：过滤document.write,document.writeln字符
 >重写这两个方法，并在字符串中正则匹配完整script标签，并提取scr对比白名单，符合的就写入script标签。其他文本或标签全部忽略。
@@ -64,5 +64,15 @@ html文件同样会被劫持，所以源代码被注入广告脚本也是很正�
 注意：尽量不要在页面中使用iframe框架。
 保护文件[06_html_guard.html](https://rawgit.com/scscms/guardJs/master/html/06_html_guard.html)
 
+### 7、添加integrity属性
+2014年3月18日，W3C发布子资源完整性 ([Subresource Integrity](https://www.w3.org/TR/2014/WD-SRI-20140318/)) 的标准工作草案。子资源完整性（Subresource Integrity）规范定义了一种机制，用户代理（如浏览器）可以通过验证所获取到的资源文件是否经过篡改，保证获得资源的完整性。如果判断到下载的资源存在可能被篡改，浏览器将不执行此文件。
+```Javascript
+<script src="https://code.jquery.com/jquery-1.10.0.min.js">
+<script src="https://code.jquery.com/jquery-1.10.2.min.js" integrity="sha256-C6CB9UYIS9UJeqinPHWTHVqh/E1uhG5Twh+Y5qFQmYg=" crossorigin="anonymous">
+```
+如上，浏览器下载了jquery-1.10.0.min.js将立刻执行脚本，哪怕是通过染毒的DNS恶意服务器里下载已经被篡改过的文件。而jquery-1.10.2.min.js下载后，浏览器将立即计算该脚本的哈希值并与脚本”integrity”属性标签中的哈希值作比较。如果二者不吻合，那么可以确定脚本已被篡改过，则浏览器就不会运行它。
+而crossorigin属性则是浏览器用于限制对非同源资源的使用规则，`crossorigin="anonymous"`表示匿名CORS，如果使用`crossorigin="use-credentials"`表示带认证的CORS。而CORS问题请参考`Access-Control-Allow-Origin`相关资料。
+现在只有　Chrome 和 Firefox 对这两个属性的完全支持。
 ## 防劫持难题
 html,css文件被劫持且修改，js爱莫能助。对节点绑定一些恶意函数无法鉴别和清理。
+低版本IE因不支持一些原型改造，所以无法实现部分防劫持功能。
