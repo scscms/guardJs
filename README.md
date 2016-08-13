@@ -76,7 +76,12 @@ html文件同样会被劫持，所以源代码被注入广告脚本也是很正�
 
 ### 8、Content Security Policy
 W3C的Content Security Policy，简称CSP。主要是用来定义页面可以加载哪些资源，减少XSS的发生。
-Chrome扩展已经引入了CSP，通过manifest.json或meta中的content_security_policy字段来定义。完全可以隔离远程的js,iframe,img,css等脚本的执行或加载。更多查看([Content Security Policy](https://www.w3.org/TR/2012/CR-CSP-20121115/))
+Chrome扩展已经引入了CSP，通过manifest.json或meta中的content_security_policy字段来定义。完全可以隔离远程的js,iframe,img,css等脚本的执行或加载。
+```Javascript
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' googlechrome.github.io; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'" />
+```
+
+更多查看([Content Security Policy](https://www.w3.org/TR/2012/CR-CSP-20121115/))
 
 ## 防劫持难题
 html,css文件被劫持且修改，js就爱莫能助。对节点绑定一些恶意函数也无法鉴别和清理。
