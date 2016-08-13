@@ -73,6 +73,11 @@ html文件同样会被劫持，所以源代码被注入广告脚本也是很正�
 如上，浏览器下载了jquery-1.10.0.min.js将立刻执行脚本，哪怕是通过染毒的DNS恶意服务器里下载已经被篡改过的文件。而jquery-1.10.2.min.js下载后，浏览器将立即计算该脚本的哈希值并与脚本”integrity”属性标签中的哈希值作比较。如果二者不吻合，那么可以确定脚本已被篡改过，则浏览器就不会运行它。
 而crossorigin属性则是浏览器用于限制对非同源资源的使用规则，`crossorigin="anonymous"`表示匿名CORS，如果使用`crossorigin="use-credentials"`表示带认证的CORS。而CORS问题请参考`Access-Control-Allow-Origin`相关资料。
 现在只有　Chrome 和 Firefox 对这两个属性的完全支持。
+
+### 8、Content Security Policy
+W3C的Content Security Policy，简称CSP。主要是用来定义页面可以加载哪些资源，减少XSS的发生。
+Chrome扩展已经引入了CSP，通过manifest.json或meta中的content_security_policy字段来定义。完全可以隔离远程的js,iframe,img,css等脚本的执行或加载。更多查看([Content Security Policy](https://www.w3.org/TR/2012/CR-CSP-20121115/))
+
 ## 防劫持难题
-html,css文件被劫持且修改，js爱莫能助。对节点绑定一些恶意函数无法鉴别和清理。
+html,css文件被劫持且修改，js就爱莫能助。对节点绑定一些恶意函数也无法鉴别和清理。
 低版本IE因不支持一些原型改造，所以无法实现部分防劫持功能。
