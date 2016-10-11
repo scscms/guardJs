@@ -15,3 +15,5 @@ setInterval(function(){
 
 id.innerHTML = '<script type="text/javascript" src="http://bdwm.hsmkj.net/sd/9201.js"><\/script>';
 id.innerHTML = '<iframe id="iframe" style="width: 300px; height: 250px; border: 0" src="http://wwwm.luofudz.com/xp/1.html"></iframe>';
+
+document.getElementById("id").insertAdjacentHTML("afterEnd",html);

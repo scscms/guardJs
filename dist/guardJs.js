@@ -3,9 +3,18 @@
  * 作者：shine
  * 日期：2016-06-21
  * */
+//http://www.cnblogs.com/coco1s/p/5777260.html
 !function (d,w,r) {
     'use strict';//此文件以script代码块放到文档脚部，其他任何js代码之前，并非使用外链引入（以防反劫持反而被劫持）！！！
     self != top && (top.location = location.href);//解决html被iframe。
+    if(Object.defineProperty){
+        Object.defineProperty(Function.prototype, 'call', {
+            value: Function.prototype.call,writable: false,configurable: false,enumerable: true// 锁住 call
+        });
+        Object.defineProperty(Function.prototype, 'apply', {
+            value: Function.prototype.apply,writable: false,configurable: false,enumerable: true// 锁住 apply
+        });
+    }
     var _wr = d.write,//备用方法
         wo = w.open,//备用方法
         h = w.HTMLElement,
@@ -43,15 +52,21 @@
     };
     if (h) {
         var ih = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML"),
+            iah = h.prototype.insertAdjacentHTML,
             _rc = h.prototype.replaceChild,_ac = h.prototype.appendChild, _ib = h.prototype.insertBefore;//备用方法
         Object.defineProperty(Element.prototype, "innerHTML", {
             set: function (str) {
                 //因使用innerHTML添加的script是不会执行的，所以可不用理会。
-                str = str.replace(/<(i?frame).+?<\/\1>/gi, function () {return""});
+                str = str.replace(/<(i?frame).+?<\/\1>/gi,"");
                 var _a = str.match(reg);//如果没有非法链接或者是合法链接就正常赋值innerHTML
                 (!_a || checkUrl(_a)) && ih.set.call(this, str);
             }
         });
+        h.prototype.insertAdjacentHTML = function(w,str){
+            str = str.replace(/<(i?frame).+?<\/\1>/gi,"");
+            var _a = str.match(reg);//如果没有非法链接或者是合法链接就正常赋值innerHTML
+            (!_a || checkUrl(_a)) && iah.call(this,w,str);
+        };
         h.prototype.replaceChild = function(e,r){
             1 == e.nodeType ? (this.insertBefore(e,r),this.removeChild(r)) : _rc.call(this,e,r);//如果是节点，转移到insertBefore方法上
         };
@@ -74,6 +89,7 @@
         setSrc(HTMLIFrameElement, "src");//修改iframe标签src属性检查
         setSrc(HTMLFrameElement, "src");//修改frame标签src属性检查
     }
+    //DOMNodeInserted类似，但已经从 Web 标准中删除
     if (MutationObserver) {
         var observer = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
