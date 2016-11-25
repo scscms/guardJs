@@ -121,7 +121,8 @@ top.location = location.href;
 一般来说我们都可以使用此脚本阻止本页面被Frame嵌套，但是在IE8及以下location对象可重置，当成普通变量（其他浏览器不能重设此变量），从而使此段代码失效。
 
 X-Frame-Options HTTP 响应头是用来给浏览器指示允许一个页面可否在frame,iframe或者object中展现的标记。
-|取值 |说明|
+
+|取值|说明|
 |:----|:----|
 |DENY |	表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许。|
 |SAMEORIGIN |表示该页面可以在相同域名页面的 frame 中展示。|
