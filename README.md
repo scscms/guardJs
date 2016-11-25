@@ -112,6 +112,49 @@ Chrome扩展已经引入了CSP，通过manifest.json或meta中的content_securit
 
 更多查看([Content Security Policy](https://www.w3.org/TR/2012/CR-CSP-20121115/))
 
+### 9、防止网页被Frame
+```javascript
+if(self != top){
+top.location = location.href;
+}
+```
+一般来说我们都可以使用此脚本阻止本页面被Frame嵌套，但是在IE8及以下location对象可重置，当成普通变量（其他浏览器不能重设此变量），从而使此段代码失效。
+
+X-Frame-Options HTTP 响应头是用来给浏览器指示允许一个页面可否在frame,iframe或者object中展现的标记。
+|取值 |说明|
+|:----|:----|
+|DENY |	表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许。|
+|SAMEORIGIN |表示该页面可以在相同域名页面的 frame 中展示。|
+|ALLOW-FROM uri |表示该页面可以在指定来源的 frame 中展示。|
+
+换一句话说，如果设置为 DENY，不光在别人的网站 frame 嵌入时会无法加载，在同域名页面中同样会无法加载。另一方面，如果设置为 SAMEORIGIN，那么页面就可以在同域名页面的 frame 中嵌套。
+
+- 配置 Apache
+```xml
+Header always append X-Frame-Options SAMEORIGIN
+```
+- 配置 nginx
+```xml
+add_header X-Frame-Options SAMEORIGIN;
+```
+- 配置 IIS
+```xml
+<system.webServer>
+  ...
+  <httpProtocol>
+    <customHeaders>
+      <add name="X-Frame-Options" value="SAMEORIGIN" />
+    </customHeaders>
+  </httpProtocol>
+  ...
+</system.webServer>
+```
+- php中使用
+```php
+ header('X-Frame-Options:Deny');
+```
+此方法支持所有浏览器，在IE下会提示“此内容不能显示在一个框架中”，而在chrome和firefox下会显示"about:blank",并在控制台输出相应错误。
+
 ## 防劫持难题
 html,css文件被劫持且修改，js就爱莫能助。对节点绑定一些恶意函数也无法鉴别和清理。
 低版本IE因不支持一些原型改造，所以无法实现部分防劫持功能。
