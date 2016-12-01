@@ -113,6 +113,9 @@ Chrome扩展已经引入了CSP，通过manifest.json或meta中的content_securit
 更多查看([Content Security Policy](https://www.w3.org/TR/2012/CR-CSP-20121115/))
 
 ### 9、防止网页被Frame
+
+通常可以写一段JavaScript代码,以禁止iframe的嵌套。这种方法叫frame busting。
+
 ```javascript
 if(self != top){
 top.location = location.href;
@@ -159,3 +162,6 @@ add_header X-Frame-Options SAMEORIGIN;
 ## 防劫持难题
 html,css文件被劫持且修改，js就爱莫能助。对节点绑定一些恶意函数也无法鉴别和清理。
 低版本IE因不支持一些原型改造，所以无法实现部分防劫持功能。
+
+## 扩展讨论阅读
+[函数防劫hijacking](Function-hijacking.md) Function-hijacking.md
