@@ -27,8 +27,8 @@ javascript函数劫持，顾名思义，即在一个函数运行之前把它劫�
     };
     eval('var a = "something";');
 ```
-## 3.鉴定函数被劫持
-怎么鉴定函数被劫持，网上流行一种直接方法是把执行函数的toString方法，在返回字符串中判断是否存在\[native code\]字符。比如eval函数没被劫持前返回字符是：
+## 3.鉴定内置函数被劫持
+怎么鉴定内置函数被劫持，网上流行一种直接方法是把内置函数的toString方法，在返回字符串中判断是否存在\[native code\]字符。比如eval函数没被劫持前返回字符是：
 ```javascript
 function eval() {
     [native code]
@@ -58,13 +58,18 @@ function eval() {
 那我还能说点啥呢？
 所以检测其是否劫持还得判断其toString方法是否被改写，或者在原型链上的方法是否已改写。
 ```javascript
-    if(Object.toString === eval.toString && eval.toString().replace(/\n|\s/g,"")=="functioneval(){[nativecode]}"){
-        console.log("没被劫持");
-    }else{
+    function hijacked(fun){
+        //判断是否是干净的内置函数
+        return "prototype" in fun || fun.toString().replace(/\n|\s/g, "") != "function"+fun.name+"(){[nativecode]}";
+    }
+    if(hijacked(eval)){
         console.log("被劫持了");
+    }else{
+        console.log("没被劫持");
     }
 ```
-## 4.函数反劫持
+## 4.内置函数反劫持
+
 - 1.判断劫持后恢复
 一旦判断被劫持后，我们就要想法恢复此方法。
 假如劫持人有另存方法为某个变量就简单点，直接还原。但这也是非常不靠谱的。
@@ -85,8 +90,15 @@ function eval() {
     console.log(eval("var b = 1;"));//恢复后执行
 ```
 此方法缺点也大，一是别人调用方法不一定使用call或apply，二是或许劫持者会事先禁用重写call、apply方法。
-
-最绿色环保的当然就是新建一个iframe干净环境来恢复。
+```javascript
+    Object.defineProperty(Function.prototype, "call", {
+        value: Function.prototype.call,writable: false,configurable: false,enumerable: true
+    });
+    Object.defineProperty(Function.prototype, "apply", {
+        value: Function.prototype.apply,writable: false,configurable: false,enumerable: true
+    });
+```
+最绿色环保的当然就是新建一个iframe干净环境来还原内置函数。
 
 ```javascript
     var _eval = window.eval;

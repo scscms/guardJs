@@ -5,13 +5,13 @@
  * */
 //http://www.cnblogs.com/coco1s/p/5777260.html
 !function (d,w,r) {
-    'use strict';//此文件以script代码块放到文档脚部，其他任何js代码之前，并非使用外链引入（以防反劫持反而被劫持）！！！
+    "use strict";//此文件以script代码块放到文档脚部，其他任何js代码之前，并非使用外链引入（以防反劫持反而被劫持）！！！
     self != top && (top.location = location.href);//解决html被iframe。
     if(Object.defineProperty){
-        Object.defineProperty(Function.prototype, 'call', {
+        Object.defineProperty(Function.prototype, "call", {
             value: Function.prototype.call,writable: false,configurable: false,enumerable: true// 锁住 call
         });
-        Object.defineProperty(Function.prototype, 'apply', {
+        Object.defineProperty(Function.prototype, "apply", {
             value: Function.prototype.apply,writable: false,configurable: false,enumerable: true// 锁住 apply
         });
     }
@@ -19,7 +19,7 @@
         wo = w.open,//备用方法
         h = w.HTMLElement,
         MutationObserver = w.MutationObserver || w.WebKitMutationObserver || w.MozMutationObserver,//变动观察器,监视DOM变动的接口
-        reg = /(https?:)?\/\/([\w-]+\.)+[\w-]+/ig;//正则提取英文域名地址
+        reg = /(https?:)?\/\/([\w\-]+\.)+[\w\-]+/ig;//正则提取英文域名地址
     //判断是否合法链接
     function checkUrl(e) {
         for (var s; s = e.shift();) {
@@ -113,6 +113,6 @@
             });
         });
         //主要监听节点插入和节点属性变化（不监听节点删除）
-        observer.observe(d,{attributes: true,childList: true,subtree: true, attributeOldValue:true,attributesFilter: ['style','src','href']});
+        observer.observe(d,{attributes: true,childList: true,subtree: true, attributeOldValue:true,attributesFilter: ["style","src","href"]});
     }
-}(document,window,['localhost:','rawgit.com','.baidu.com','bdstatic.com']);//白名单域名
+}(document,window,["localhost:","rawgit.com",".baidu.com","bdstatic.com"]);//白名单域名
